@@ -1,0 +1,209 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CoreMindset TV - Content Management System</title>
+    <script src="https://unpkg.com/react@18/umd/react.development.js"></script>
+    <script src="https://unpkg.com/react-dom@18/umd/react-dom.development.js"></script>
+    <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://unpkg.com/lucide@latest/dist/umd/lucide.js"></script>
+    <style>
+        .gradient-bg { background: linear-gradient(135deg, #1e3a8a 0%, #1e40af 100%); }
+        .platform-instagram { background: linear-gradient(45deg, #833ab4, #fd1d1d, #fcb045); }
+        .platform-youtube { background: #ff0000; }
+        .platform-tiktok { background: #000000; }
+        .platform-facebook { background: #1877f2; }
+        .platform-twitter { background: #1da1f2; }
+        .platform-linkedin { background: #0077b5; }
+    </style>
+</head>
+<body>
+    <div id="root"></div>
+    <script type="text/babel">
+        const { useState } = React;
+        const { Plus, Search, Filter, Calendar, BarChart3, Table, Grid, Eye, TrendingUp, Heart, MessageCircle, Share, Play } = lucide;
+
+        const CoreMindsetContentSystem = () => {
+            const [activeTab, setActiveTab] = useState('All Content');
+            const [searchTerm, setSearchTerm] = useState('');
+            const [showNewModal, setShowNewModal] = useState(false);
+            const [viewMode, setViewMode] = useState('table');
+
+            const tabs = [
+                { name: 'All Content', icon: Grid, view: 'table' },
+                { name: 'Content Calendar', icon: Calendar, view: 'calendar' },
+                { name: 'By Platform', icon: BarChart3, view: 'kanban' },
+                { name: 'Work Progress', icon: Eye, view: 'kanban' },
+                { name: 'Performance Analysis', icon: BarChart3, view: 'analytics' },
+                { name: 'Dashboard', icon: BarChart3, view: 'dashboard' },
+                { name: 'Gallery', icon: Grid, view: 'gallery' },
+                { name: 'Table', icon: Table, view: 'table' }
+            ];
+
+            const platforms = {
+                'Instagram': 'platform-instagram',
+                'YouTube': 'platform-youtube',
+                'TikTok': 'platform-tiktok',
+                'Facebook': 'platform-facebook',
+                'Twitter': 'platform-twitter',
+                'LinkedIn': 'platform-linkedin'
+            };
+
+            const statusColors = {
+                'Planning': 'bg-blue-500',
+                'Published': 'bg-green-500',
+                'In Production': 'bg-yellow-500',
+                'Under Review': 'bg-orange-500'
+            };
+
+            const [contentData] = useState([
+                {
+                    id: 1,
+                    title: 'Amazon Affiliate Content OS',
+                    platforms: [],
+                    type: '',
+                    publishDate: '',
+                    status: 'Planning',
+                    assignedTo: '',
+                    tags: [],
+                    audience: [],
+                    description: '',
+                    locked: true,
+                    views: 0,
+                    likes: 0,
+                    comments: 0,
+                    shares: 0
+                },
+                {
+                    id: 2,
+                    title: 'Weekend Essentials to Make Home Feel Like a Retreat',
+                    platforms: ['Instagram', 'YouTube', 'TikTok'],
+                    type: 'Video',
+                    publishDate: '2024-01-15',
+                    status: 'Published',
+                    assignedTo: '',
+                    tags: ['Fitness', 'Sustainable Living', 'Fitness Enthusiasts'],
+                    audience: ['Parents'],
+                    description: 'Transform your home into a peaceful retreat',
+                    locked: true,
+                    views: 15420,
+                    likes: 1240,
+                    comments: 89,
+                    shares: 234
+                }
+            ]);
+
+            const filteredContent = contentData.filter(item =>
+                item.title.toLowerCase().includes(searchTerm.toLowerCase()) ||
+                item.tags.some(tag => tag.toLowerCase().includes(searchTerm.toLowerCase()))
+            );
+
+            const handleTabClick = (tab) => {
+                setActiveTab(tab.name);
+                setViewMode(tab.view);
+            };
+
+            const renderTableView = () => (
+                React.createElement('div', { className: 'bg-gray-800 rounded-lg overflow-hidden' },
+                    React.createElement('div', { className: 'overflow-x-auto' },
+                        React.createElement('table', { className: 'w-full' },
+                            React.createElement('thead', { className: 'bg-gray-700' },
+                                React.createElement('tr', null,
+                                    React.createElement('th', { className: 'px-4 py-3 text-left text-xs font-medium text-gray-300 uppercase tracking-wider' }, 'Content Title'),
+                                    React.createElement('th', { className: 'px-4 py-3 text-left text-xs font-medium text-gray-300 uppercase tracking-wider' }, 'Platform'),
+                                    React.createElement('th', { className: 'px-4 py-3 text-left text-xs font-medium text-gray-300 uppercase tracking-wider' }, 'Status'),
+                                    React.createElement('th', { className: 'px-4 py-3 text-left text-xs font-medium text-gray-300 uppercase tracking-wider' }, 'Performance')
+                                )
+                            ),
+                            React.createElement('tbody', { className: 'divide-y divide-gray-700' },
+                                filteredContent.map((item) =>
+                                    React.createElement('tr', { key: item.id, className: 'hover:bg-gray-700/50' },
+                                        React.createElement('td', { className: 'px-4 py-3' },
+                                            React.createElement('div', { className: 'flex items-center gap-2' },
+                                                item.locked && React.createElement('div', { className: 'w-3 h-3 bg-yellow-500 rounded-full' }),
+                                                React.createElement('span', { className: 'text-sm font-medium' }, item.title)
+                                            )
+                                        ),
+                                        React.createElement('td', { className: 'px-4 py-3' },
+                                            React.createElement('div', { className: 'flex gap-1' },
+                                                item.platforms.map((platform) =>
+                                                    React.createElement('span', {
+                                                        key: platform,
+                                                        className: `px-2 py-1 rounded-md text-xs font-medium text-white ${platforms[platform]}`
+                                                    }, platform)
+                                                )
+                                            )
+                                        ),
+                                        React.createElement('td', { className: 'px-4 py-3' },
+                                            React.createElement('span', {
+                                                className: `px-2 py-1 rounded-md text-xs font-medium text-white ${statusColors[item.status]}`
+                                            }, item.status)
+                                        ),
+                                        React.createElement('td', { className: 'px-4 py-3' },
+                                            item.status === 'Published' && React.createElement('div', { className: 'flex items-center gap-3 text-xs text-gray-400' },
+                                                React.createElement('div', { className: 'flex items-center gap-1' },
+                                                    React.createElement(Eye, { className: 'w-3 h-3' }),
+                                                    item.views.toLocaleString()
+                                                )
+                                            )
+                                        )
+                                    )
+                                )
+                            )
+                        )
+                    )
+                )
+            );
+
+            return React.createElement('div', { className: 'min-h-screen bg-gray-900 text-white' },
+                React.createElement('div', { className: 'gradient-bg px-6 py-8' },
+                    React.createElement('h1', { className: 'text-4xl font-bold text-center' }, 'COREMINDSET TV'),
+                    React.createElement('div', { className: 'mt-6 bg-black/20 rounded-lg p-4' },
+                        React.createElement('h2', { className: 'text-xl font-semibold mb-2 flex items-center gap-2' },
+                            React.createElement(Grid, { className: 'w-5 h-5' }),
+                            'CoreMindsetTV AI-Driven YouTube Content System'
+                        ),
+                        React.createElement('p', { className: 'text-sm text-blue-100' },
+                            'Professional Content Management System for YouTube Creators'
+                        )
+                    )
+                ),
+                React.createElement('div', { className: 'bg-gray-800 px-6 py-4 border-b border-gray-700' },
+                    React.createElement('div', { className: 'flex items-center justify-between' },
+                        React.createElement('div', { className: 'flex items-center space-x-6' },
+                            tabs.map((tab) => {
+                                const Icon = tab.icon;
+                                return React.createElement('button', {
+                                    key: tab.name,
+                                    onClick: () => handleTabClick(tab),
+                                    className: `flex items-center gap-2 px-3 py-2 rounded-md text-sm font-medium transition-colors ${
+                                        activeTab === tab.name
+                                            ? 'bg-blue-600 text-white'
+                                            : 'text-gray-300 hover:text-white hover:bg-gray-700'
+                                    }`
+                                },
+                                    React.createElement(Icon, { className: 'w-4 h-4' }),
+                                    tab.name
+                                );
+                            })
+                        ),
+                        React.createElement('button', {
+                            className: 'bg-blue-600 hover:bg-blue-700 px-4 py-2 rounded-md text-sm font-medium flex items-center gap-2'
+                        },
+                            React.createElement(Plus, { className: 'w-4 h-4' }),
+                            'New Content'
+                        )
+                    )
+                ),
+                React.createElement('div', { className: 'p-6' },
+                    renderTableView()
+                )
+            );
+        };
+
+        ReactDOM.render(React.createElement(CoreMindsetContentSystem), document.getElementById('root'));
+    </script>
+</body>
+</html>
